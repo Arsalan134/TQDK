@@ -1,3 +1,5 @@
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -16,8 +18,8 @@ public class Main {
 	static ArrayList<Student> students = new ArrayList<>();
 	static ArrayList<University> universities = new ArrayList<>();
 
-	static int numberOfStudents = 100;
-	static int numberOfUniversities = Math.min(namesUni.length, 5);
+	static int numberOfStudents = 10;
+	static int numberOfUniversities = Math.min(namesUni.length, 4);
 	static int maxScore = 700;
 	static double delta = 0.9;
 
@@ -34,8 +36,6 @@ public class Main {
 
 		for (int i = 0; i < numberOfStudents; i++) {
 			int randomScore = r.nextInt(maxScore + 1);
-			if (i == numberOfStudents - 1 || i == 0 || i == 1)
-				randomScore = 700;
 			Student newStudent = new Student(randomScore, i + 1000);
 			students.add(newStudent);
 		}
@@ -45,6 +45,7 @@ public class Main {
 		System.out.flush();
 		System.out.println("Number of Universities:\t" + universities.size());
 		System.out.println("Number of Students:\t" + students.size());
+		System.out.println("Number of Seats:\t\t" + totalNumberOfSeats());
 		System.out.println();
 		System.out.flush();
 
@@ -73,10 +74,11 @@ public class Main {
 	}
 
 	static void printHappiness() {
-		System.out.println("Name\t\t\t" + "AcceptedTo\t" + "Happiness %" + "\tPreference");
+		System.out.println("Name \t\tScore\t\t" + "AcceptedTo\t" + "Happiness %" + "\tPreference");
+		NumberFormat formatter = new DecimalFormat("#0.000");
 		for (Student student : students)
-			System.out.println(student.getName() + "\t\t" + student.acceptedToUniversity() + "/" + student.getPreferenceList().size() + "\t\t" + student.happinessLevel()
-					+ "\t\t" + student.getPreferenceList());
+			System.out.println(student.getName() + "\t" + student.getScore() + "\t\t" + student.acceptedToUniversity() + "/" + student.getPreferenceList().size() + "\t\t"
+					+ student.happinessLevel() + "\t\t" + student.getPreferenceList());
 
 		double average = 0;
 		for (Student student : students)
@@ -102,12 +104,19 @@ public class Main {
 		return accepted;
 	}
 
+	static int totalNumberOfSeats() {
+		int temp = 0;
+		for (University university : universities) {
+			temp += university.availableSeats();
+		}
+		return temp;
+	}
+
 	private static void startAlgo() {
 		/* This procedure continues until EITHER all students are admitted by a
 		 * university, or unassigned students have no university to propose that
 		 * has not rejected them. Azer Abizade© */
 
-		// while (!areAllStudentsAdmitted() && availableSeatsToApply() > 0)
 		while (!areAllStudentsAdmitted() && existUniversityThatHasNotBeenAppliedBySomeRejectedStudent())
 			for (Student student : students) {
 				if (student.hasBeenAcceptedAnywhere())

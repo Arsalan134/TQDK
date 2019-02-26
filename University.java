@@ -10,7 +10,7 @@ public class University {
 
 	public University() {
 		// capacity = r.nextInt(10) + 1;
-		capacity = 10;
+		capacity = 2;
 		this.setPassingScore(r.nextInt(200) + 200);
 		this.studentList = new ArrayList<>();
 	}
